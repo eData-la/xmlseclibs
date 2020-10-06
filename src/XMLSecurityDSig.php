@@ -980,38 +980,39 @@ class XMLSecurityDSig
         $query = "./secdsig:KeyInfo";
         $nodeset = $xpath->query($query, $parentRef);
         $keyInfo = $nodeset->item(0);
+        
         $dsig_pfx = '';
-        if (! $keyInfo) {
-            $pfx = $parentRef->lookupPrefix(self::XMLDSIGNS);
-            if (! empty($pfx)) {
-                $dsig_pfx = $pfx.":";
-            }
-            $inserted = false;
-            $keyInfo = $baseDoc->createElementNS(self::XMLDSIGNS, $dsig_pfx.'KeyInfo');
+        // if (! $keyInfo) {
+        //     $pfx = $parentRef->lookupPrefix(self::XMLDSIGNS);
+        //     if (! empty($pfx)) {
+        //         $dsig_pfx = $pfx.":";
+        //     }
+        //     $inserted = false;
+        //     $keyInfo = $baseDoc->createElementNS(self::XMLDSIGNS, $dsig_pfx.'KeyInfo');
 
-            $query = "./secdsig:Object";
-            $nodeset = $xpath->query($query, $parentRef);
-            if ($sObject = $nodeset->item(0)) {
-                $sObject->parentNode->insertBefore($keyInfo, $sObject);
-                $inserted = true;
-            }
+        //     $query = "./secdsig:Object";
+        //     $nodeset = $xpath->query($query, $parentRef);
+        //     if ($sObject = $nodeset->item(0)) {
+        //         $sObject->parentNode->insertBefore($keyInfo, $sObject);
+        //         $inserted = true;
+        //     }
 
-            if (! $inserted) {
-                $parentRef->appendChild($keyInfo);
-            }
-        } else {
-            $pfx = $keyInfo->lookupPrefix(self::XMLDSIGNS);
-            if (! empty($pfx)) {
-                $dsig_pfx = $pfx.":";
-            }
-        }
+        //     if (! $inserted) {
+        //         $parentRef->appendChild($keyInfo);
+        //     }
+        // } else {
+        //     $pfx = $keyInfo->lookupPrefix(self::XMLDSIGNS);
+        //     if (! empty($pfx)) {
+        //         $dsig_pfx = $pfx.":";
+        //     }
+        // }
 
         // Add all certs if there are more than one
         $certs = self::staticGet509XCerts($cert, $isPEMFormat);
 
         // Attach X509 data node
         $x509DataNode = $baseDoc->createElementNS(self::XMLDSIGNS, $dsig_pfx.'X509Data');
-        $keyInfo->appendChild($x509DataNode);
+        $parentRef->appendChild($x509DataNode);
 
         $issuerSerial = false;
         $subjectName = false;
